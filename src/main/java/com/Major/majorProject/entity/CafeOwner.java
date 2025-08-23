@@ -3,6 +3,9 @@ package com.Major.majorProject.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
@@ -20,4 +23,7 @@ public class CafeOwner {
     private String phone;
 
     private String password;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cafe> cafes;
 }
