@@ -22,7 +22,7 @@ public class CafeOwner {
 
     private String phone;
 
-    private String password;
+    private String password;  //Bcrypt hashing
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cafe> cafes;
