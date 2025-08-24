@@ -13,10 +13,15 @@ public class PC {
     private Long id;
 
     private int seatNumber;
+
     private String configuration;
-    private boolean isActive = true;
+
+    private String available;
+
+
 
     @ManyToOne
     @JoinColumn(name = "cafe_id", nullable = false)
     private Cafe cafe;
+
 }

@@ -2,16 +2,20 @@ package com.Major.majorProject.service;
 
 import com.Major.majorProject.dto.CafeAdditionDto;
 import com.Major.majorProject.dto.OwnerRegistrationDto;
+import com.Major.majorProject.dto.PCDto;
 import com.Major.majorProject.entity.Cafe;
 import com.Major.majorProject.entity.CafeOwner;
+import com.Major.majorProject.entity.PC;
 import com.Major.majorProject.repository.CafeOwnerRepository;
 import com.Major.majorProject.repository.CafeRepository;
+import com.Major.majorProject.repository.PCRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class OwnerService {
@@ -19,10 +23,13 @@ public class OwnerService {
     private final CafeOwnerRepository cafeOwnerRepository;
     private final PasswordEncoder passwordEncoder;
     private final CafeRepository cafeRepository;
-    public OwnerService(CafeOwnerRepository cor, PasswordEncoder pe, CafeRepository cr){
+    private final PCRepository pcRepository;
+    public OwnerService(CafeOwnerRepository cor, PasswordEncoder pe,
+                        CafeRepository cr, PCRepository pcr){
         this.cafeOwnerRepository = cor;
         this.passwordEncoder = pe;
         this.cafeRepository = cr;
+        this.pcRepository = pcr;
     }
 
 
@@ -71,5 +78,38 @@ public class OwnerService {
             dto.add(cad);
         }
         return dto;
+    }
+
+    public void addPC(long cafeId, PCDto pcd) {
+        Cafe cafe = cafeRepository.findById(cafeId).get();
+        PC pc = new PC();
+        pc.setSeatNumber(pcd.getSeatNumber());
+        pc.setConfiguration(pcd.getConfiguration());
+        pc.setAvailable(pcd.getAvailable());
+        pc.setCafe(cafe);
+
+        pcRepository.save(pc);
+    }
+
+    public List<PCDto> getAllPcOfCafe(long cafeId) {
+        Cafe cafe = cafeRepository.findById(cafeId).get();
+        List<PCDto> allPc = new ArrayList<>();
+        List<PC> pcs;
+        Optional<List<PC>> temp = pcRepository.findAllByCafe(cafe);
+        if(temp.isPresent()){
+            pcs = temp.get();
+        }else{
+            return allPc;
+        }
+
+        for(PC pc : pcs){
+            PCDto dto = new PCDto();
+            dto.setId(pc.getId());
+            dto.setSeatNumber(pc.getSeatNumber());
+            dto.setAvailable(pc.getAvailable());
+            dto.setConfiguration(pc.getConfiguration());
+            allPc.add(dto);
+        }
+        return allPc;
     }
 }

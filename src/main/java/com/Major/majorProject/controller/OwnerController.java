@@ -2,6 +2,7 @@ package com.Major.majorProject.controller;
 
 import com.Major.majorProject.dto.CafeAdditionDto;
 import com.Major.majorProject.dto.OwnerRegistrationDto;
+import com.Major.majorProject.dto.PCDto;
 import com.Major.majorProject.service.OwnerService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,17 @@ public class OwnerController {
         List<CafeAdditionDto> cafes = ownerService.getAllCafeOfOwner();
 
         return new ResponseEntity<>(cafes,HttpStatus.OK);
+    }
+
+    @PostMapping("/addSeat/{cafeId}")
+    public ResponseEntity<PCDto> addPC(@PathVariable("cafeId") long cafeId, @RequestBody PCDto pcd){
+        ownerService.addPC(cafeId, pcd);
+        return new ResponseEntity<>(pcd, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/PCs/{cafeId}")
+    public ResponseEntity<List<PCDto>> getAllPcOfCafe(@PathVariable("cafeId") long cafeId){
+        List<PCDto> pcs = ownerService.getAllPcOfCafe(cafeId);
+        return new ResponseEntity<>(pcs,HttpStatus.OK);
     }
 }
