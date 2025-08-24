@@ -40,6 +40,7 @@ public class SecurityConfig {
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form.permitAll()
+                        .defaultSuccessUrl("/owner/")
                 )
                 .logout(logout -> logout.permitAll());
 

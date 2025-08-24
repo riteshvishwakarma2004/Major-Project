@@ -15,9 +15,11 @@ public class Cafe {
     private Long id;
 
     private String name;
+
     private String address;
 
     private LocalTime openTime;
+
     private LocalTime closeTime;
 
     private Double hourlyRate;
