@@ -8,6 +8,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class CafeAdditionDto {
+    private long id;
     private String name;
     private String address;
     private LocalTime openTime;

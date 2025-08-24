@@ -10,6 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class OwnerService {
 
@@ -50,5 +53,23 @@ public class OwnerService {
         cafe.setCloseTime(cad.getCloseTime());
         cafe.setHourlyRate(cad.getHourlyRate());
         cafeRepository.save(cafe);   //try and catch maybe needed. we will see this later.
+    }
+
+    public List<CafeAdditionDto> getAllCafeOfOwner() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        CafeOwner owner = cafeOwnerRepository.findByEmail(email).get();
+        List<Cafe> cafes = cafeRepository.findAllByOwner(owner);
+        List<CafeAdditionDto> dto = new ArrayList<>();
+        for(Cafe cafe : cafes){
+            CafeAdditionDto cad = new CafeAdditionDto();
+            cad.setId(cafe.getId());
+            cad.setName(cafe.getName());
+            cad.setAddress(cafe.getAddress());
+            cad.setOpenTime(cafe.getOpenTime());
+            cad.setCloseTime(cafe.getCloseTime());
+            cad.setHourlyRate(cafe.getHourlyRate());
+            dto.add(cad);
+        }
+        return dto;
     }
 }

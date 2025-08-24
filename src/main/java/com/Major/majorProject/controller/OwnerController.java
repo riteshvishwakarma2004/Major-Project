@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/owner")
 public class OwnerController {
@@ -35,5 +37,12 @@ public class OwnerController {
     public ResponseEntity<CafeAdditionDto> cafeAddition(@RequestBody CafeAdditionDto cad ){
        ownerService.cafeAddition(cad);
        return new ResponseEntity<>(cad,HttpStatus.CREATED);
+    }
+
+    @GetMapping("/cafes")
+    public ResponseEntity<List<CafeAdditionDto>> getAllCafeOfOwner(){
+        List<CafeAdditionDto> cafes = ownerService.getAllCafeOfOwner();
+
+        return new ResponseEntity<>(cafes,HttpStatus.OK);
     }
 }
