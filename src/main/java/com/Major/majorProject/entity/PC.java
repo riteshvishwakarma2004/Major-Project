@@ -16,7 +16,7 @@ public class PC {
 
     private String configuration;
 
-    private String available;
+    private String available;  
 
 
 

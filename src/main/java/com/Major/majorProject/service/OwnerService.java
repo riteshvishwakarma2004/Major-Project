@@ -3,17 +3,23 @@ package com.Major.majorProject.service;
 import com.Major.majorProject.dto.CafeAdditionDto;
 import com.Major.majorProject.dto.OwnerRegistrationDto;
 import com.Major.majorProject.dto.PCDto;
+import com.Major.majorProject.dto.SlotDetails;
 import com.Major.majorProject.entity.Cafe;
 import com.Major.majorProject.entity.CafeOwner;
 import com.Major.majorProject.entity.PC;
+import com.Major.majorProject.entity.UserBooking;
 import com.Major.majorProject.repository.CafeOwnerRepository;
 import com.Major.majorProject.repository.CafeRepository;
 import com.Major.majorProject.repository.PCRepository;
+import com.Major.majorProject.repository.UserBookingRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +30,15 @@ public class OwnerService {
     private final PasswordEncoder passwordEncoder;
     private final CafeRepository cafeRepository;
     private final PCRepository pcRepository;
+    private final UserBookingRepository userBookingRepository;
     public OwnerService(CafeOwnerRepository cor, PasswordEncoder pe,
-                        CafeRepository cr, PCRepository pcr){
+                        CafeRepository cr, PCRepository pcr,
+                        UserBookingRepository ubr){
         this.cafeOwnerRepository = cor;
         this.passwordEncoder = pe;
         this.cafeRepository = cr;
         this.pcRepository = pcr;
+        this.userBookingRepository = ubr;
     }
 
 
@@ -111,5 +120,30 @@ public class OwnerService {
             allPc.add(dto);
         }
         return allPc;
+    }
+
+    public List<SlotDetails> getAllSlotsOfPc(long pcId) {
+        PC pc = pcRepository.findById(pcId).get();
+        Cafe cafe = pc.getCafe();
+        LocalDate date = LocalDate.now();
+        List<UserBooking> bookings = userBookingRepository.findByBookingDateAndPc(date,pc);
+        HashSet<Integer> hs = new HashSet<>();
+        for(UserBooking ub : bookings){
+            hs.add(ub.getStartTime().getHour());
+        }
+        int startTime = cafe.getOpenTime().getHour(); //eg. 10
+        int closeTime = cafe.getCloseTime().getHour(); //eg.18
+        int totalSlots = closeTime - startTime; //eg. 8
+        int start = startTime; //eg.10
+        List<SlotDetails> slots = new ArrayList<>();
+        for(int i=1; i<=totalSlots; i++){
+            SlotDetails sd = new SlotDetails();
+            sd.setStartTime(start + ".00");
+            sd.setEndTime(start+1 + ".00");
+            sd.setStatus((hs.contains(start)) ? "CLOSED" : "OPEN");
+            start++;
+            slots.add(sd);
+        }
+        return slots;
     }
 }

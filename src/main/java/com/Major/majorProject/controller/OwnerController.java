@@ -3,6 +3,7 @@ package com.Major.majorProject.controller;
 import com.Major.majorProject.dto.CafeAdditionDto;
 import com.Major.majorProject.dto.OwnerRegistrationDto;
 import com.Major.majorProject.dto.PCDto;
+import com.Major.majorProject.dto.SlotDetails;
 import com.Major.majorProject.service.OwnerService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -57,5 +58,11 @@ public class OwnerController {
     public ResponseEntity<List<PCDto>> getAllPcOfCafe(@PathVariable("cafeId") long cafeId){
         List<PCDto> pcs = ownerService.getAllPcOfCafe(cafeId);
         return new ResponseEntity<>(pcs,HttpStatus.OK);
+    }
+
+    @GetMapping("/slots/{pcId}")
+    public ResponseEntity<List<SlotDetails>> getAllSlotsOfPc(@PathVariable("pcId") long pcId){
+       List<SlotDetails> slots =  ownerService.getAllSlotsOfPc(pcId);
+        return new ResponseEntity<>(slots,HttpStatus.OK);
     }
 }
